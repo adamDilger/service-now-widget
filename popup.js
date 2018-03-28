@@ -1,4 +1,15 @@
+var mainUrl;
+
+function loadData() {
+    chrome.storage.sync.get(InitialData, function(items) {
+        mainUrl = items.mainUrlOption;
+    });
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
+
+    loadData();
 
     var tables = [{
             table: 'sys_script',
@@ -31,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var table = document.querySelector('input[name="type"]:checked').id;
         var searchText = document.getElementById('search-text').value.replace(" ", "%20");
-        var url = "https://downerdev1.service-now.com/" + table + "_list.do?sysparm_query=nameLIKE" + searchText + "&sysparm_first_row=1&sysparm_view=&sysparm_choice_query_raw=&sysparm_list_header_search=true";
+        var url = "https://" + mainUrl + ".service-now.com/" + table + "_list.do?sysparm_query=nameLIKE" + searchText + "&sysparm_first_row=1&sysparm_view=&sysparm_choice_query_raw=&sysparm_list_header_search=true";
 
         //recreate url if wot
         if (table == 'wot') {
