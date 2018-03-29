@@ -3,13 +3,21 @@
 
 <head>
     <title>ServiceNow QuickFind</title>
+    <style>
+        body {
+            width: 500px;
+        }
+    </style>
 </head>
 
 <body>
     <h1>Downer QuickFind Options</h1>
 
-    Main Url:<br>
-    <input type="text" name="url" id="main-url">.service-now.com <br>
+    <button id="new-environment">+</button> Environment Urls:<br>
+
+    <div id="new-env-url">
+        Url1: <input type="text" name="env-url-input" id="env-url-input1">.service-now.com<br> Url2: <input type="text" name="env-url-input" id="env-url-input2">.service-now.com<br> Url3: <input type="text" name="env-url-input" id="env-url-input3">.service-now.com<br>
+    </div>
 
     <button id="save">Submit</button>
 

@@ -2,7 +2,6 @@ var mainUrl;
 
 function loadData() {
     chrome.storage.sync.get(InitialData, function(items) {
-        console.log('setting mainUrl: ' + items.mainUrlOption);
         mainUrl = items.mainUrlOption;
     });
 }
@@ -15,6 +14,13 @@ function getMainUrl() {
 document.addEventListener('DOMContentLoaded', function() {
 
     loadData();
+
+    var queries = [{
+        name: "Business Rules",
+        table: "sys_script",
+        field: "Name",
+        operator: "LIKE"
+    }]
 
     var tables = [{
             table: 'sys_script',
