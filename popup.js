@@ -2,8 +2,13 @@ var mainUrl;
 
 function loadData() {
     chrome.storage.sync.get(InitialData, function(items) {
+        console.log('setting mainUrl: ' + items.mainUrlOption);
         mainUrl = items.mainUrlOption;
     });
+}
+
+function getMainUrl() {
+    return 'https://' + mainUrl + ".service-now.com";
 }
 
 
@@ -26,6 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             table: 'wot',
             name: 'WOT'
+        },
+        {
+            table: 'user',
+            name: 'User'
         }
     ];
 
@@ -42,11 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var table = document.querySelector('input[name="type"]:checked').id;
         var searchText = document.getElementById('search-text').value.replace(" ", "%20");
-        var url = "https://" + mainUrl + ".service-now.com/" + table + "_list.do?sysparm_query=nameLIKE" + searchText + "&sysparm_first_row=1&sysparm_view=&sysparm_choice_query_raw=&sysparm_list_header_search=true";
+        var url = getMainUrl() + '/' + table + "_list.do?sysparm_query=nameLIKE" + searchText + "&sysparm_first_row=1&sysparm_view=&sysparm_choice_query_raw=&sysparm_list_header_search=true";
 
         //recreate url if wot
         if (table == 'wot') {
-            url = 'https://downerdev1.service-now.com/wm_task_list.do?sysparm_query=u_primary_contract!%3DSDU%5Estate!%3D7%5Enumber%3D' + searchText;
+            url = getMainUrl() + '/wm_task_list.do?sysparm_query=u_primary_contract!%3DSDU%5Estate!%3D7%5Enumber%3D' + searchText;
+        } else if (table == 'user') {
+            url = getMainUrl() + '/sys_user_list.do?sysparm_query=nameLIKE' + searchText;
         }
 
         chrome.tabs.create({ url: url });

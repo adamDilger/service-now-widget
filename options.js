@@ -2,7 +2,9 @@
 function save_options() {
     var url = document.getElementById('main-url').value;
 
-    chrome.storage.sync.set(InitialData, function() {
+    chrome.storage.sync.set({
+        mainUrlOption: url,
+    }, function() {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
         status.textContent = 'Options saved.';
