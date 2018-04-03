@@ -40,27 +40,36 @@ function restore_options() {
     document.getElementById('save-options').addEventListener('click', save_options);
 
     refreshTables();
+
+    document.getElementById('add-query').addEventListener('click', function() {
+        queryCount++;
+        addNewQuery();
+    });
 }
 
 function refreshTables() {
     var tableContainer = document.getElementById('table-container');
     tableContainer.innerHTML = '';
     for (var i = 0; i < queryCount; i++) {
-        tableContainer.innerHTML += '<input type="text" placeholder="Table Name"> '+
+        tableContainer.innerHTML +=
+            '<input type="text" placeholder="Label"> ' +
+            '<input type="text" placeholder="Table Name"> ' +
             '<input type="text" placeholder="Field Name">' +
-            getOperatorSelectBox(i) + ((i!=queryCount-1) ? '<br>' : '');
+            getOperatorSelectBox(i) + '<br>';
     }
+}
 
-    tableContainer.innerHTML += '<input id="add-query" type="button" value="+">';
-
-    document.getElementById('add-query').addEventListener('click', function() {
-        queryCount++;
-        refreshTables();
-    });
+function addNewQuery() {
+    var tableContainer = document.getElementById('table-container');
+    tableContainer.innerHTML +=
+        '<input type="text" placeholder="Label"> ' +
+        '<input type="text" placeholder="Table Name"> ' +
+        '<input type="text" placeholder="Field Name">' +
+        getOperatorSelectBox(queryCount) + '<br>';
 }
 
 function getOperatorSelectBox(id) {
-    return '<select id="'+id+'"><option value="like">LIKE</option><option value="equal">=</option></select>';
+    return '<select id="' + id + '"><option value="like">LIKE</option><option value="equal">=</option></select>';
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
