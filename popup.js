@@ -1,44 +1,12 @@
-var mainUrl;
-var envUrls;
+var options = {};
 
 function loadData() {
     chrome.storage.sync.get(InitialData, function(items) {
-        mainUrl = items.mainUrlOption;
+        options = items;
+        options.envUrls = items.envList.split(',');
 
-        envUrls = items.envList.split(',');
-
-        refreshUI();
+        refreshEnvList();
     });
-}
-
-function getMainUrl() {
-
-    mainUrl = document.querySelector('input[name="env"]:checked').id;
-
-    return 'https://' + mainUrl + ".service-now.com";
-}
-
-function refreshUI() {
-    var container = document.getElementById('env-container');
-    var tmp = '';
-
-    for (var j = 0; j < envUrls.length; j++) {
-        var url = envUrls[j];
-
-        if (j == 0) {
-            tmp += '<input type="radio" name="env" id="' + url + '" checked>' + url + '<br>';
-        } else {
-            tmp += '<input type="radio" name="env" id="' + url + '">' + url + '<br>';
-        }
-    }
-
-    container.innerHTML = tmp;
-}
-
-
-document.addEventListener('DOMContentLoaded', function() {
-
-    loadData();
 
     var queries = [{
         name: "Business Rules",
@@ -47,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         operator: "LIKE"
     }]
 
-    var tables = [{
+    options.tables = [{
             table: 'sys_script',
             name: 'Business Rules'
         },
@@ -68,14 +36,56 @@ document.addEventListener('DOMContentLoaded', function() {
             name: 'User'
         }
     ];
+}
 
+function getMainUrl() {
+    mainUrl = document.querySelector('input[name="env"]:checked').id;
+    return 'https://' + mainUrl + ".service-now.com";
+}
+
+function refreshEnvList() {
+    var container = document.getElementById('env-container');
     var tmp = '';
-    tables.forEach(element => {
-        tmp += '<input type="radio" name="type" id="' + element.table + '">' + element.name + '<br>';
+
+    for (var j = 0; j < options.envUrls.length; j++) {
+        var url = options.envUrls[j];
+
+        if (j == 0) {
+            tmp += '<td><input class="env-radio" type="radio" name="env" id="' + url + '" checked>' +
+            '<label for="'+url+'">' + url + '</label></td>';
+        } else {
+            tmp += '<td><input class="env-radio" type="radio" name="env" id="' + url + '">' +
+            '<label for="'+url+'">' + url + '</label></td>';
+        }
+    }
+
+    container.innerHTML = tmp;
+}
+
+function refreshTablesList() {
+    var tmp = '';
+    options.tables.forEach(element => {
+        tmp += '<input type="radio" name="type" id="' + element.table + '">' + 
+            '<label for="'+element.table+'">' + element.name + '</label><br>';
     });
 
     document.getElementById('table-radio-container').innerHTML = tmp;
     document.getElementById('sys_script').setAttribute('checked', 'true');
+    var searchText = document.getElementById('search-text');
+
+    //set all to focus the textbox onchange
+    var radios = document.getElementsByName('type');
+    for (var i = 0, len = radios.length; i < len; i++){
+        radios[i].addEventListener('change', function(){
+            searchText.focus();
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    loadData();
+    refreshTablesList();
 
     var checkPageButton = document.getElementById('checkPage');
     checkPageButton.addEventListener('click', function() {
@@ -95,4 +105,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }, false);
 
+    document.getElementById('search-text').focus();
 }, false);

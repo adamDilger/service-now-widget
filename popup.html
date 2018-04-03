@@ -8,39 +8,77 @@
 
     <style>
         body {
+            font-family: Arial, sans-serif;
             width: 400px;
             height: auto;
         }
         
         .env-wrapper {
             padding: 5px;
-            margin: 5px;
-            background: lightcyan;
-            border: lightblue 1px solid;
+            background-color: rgb(231, 231, 231);
+            color: #000000aa;
+            border-radius: 3px;
+        }
+
+        h3 {
+            margin: 6px 4px;
+        }
+
+        #env-container {
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        #env-container td {
+            border: 1px solid transparent;
+            border-radius: 3px;
+            background-color: #607D8B;
+            color: white;
+            text-align: center;
+        }
+
+        label {
+            padding:3px;    
+        }
+
+        #checkPage {
+            background-color: #607D8B;
+            border-radius: 5px;
+            border: 0;
+            padding: 5px 30px;
+            color:white;
+            font-size: 13px;
+        }
+
+        #search-text {
+            font-size: 13px;
+            padding: 4px 10px;
+            margin: 4px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
     </style>
 </head>
 
 <body>
-    <h1>Downer QuickFind</h1>
+    <h1>ServiceNow QuickFind</h1>
 
     <div class="env-wrapper">
         <h3>Environment</h3>
-        <form id="env-container">
+        <table id="env-container">
 
-        </form>
+        </table>
     </div>
 
-    <form>
+    <form style="margin:5px; margin-top: 10px;">
+        <h3>Table</h3>
         <div id='table-radio-container'>
-            <!-- <input type="radio" name="type" id="sys_script">Business Rules<br>
-            <input type="radio" name="type" id="sys_script_include">Script Includes<br>
-            <input type="radio" name="type" id="sys_ui_page">UI Pages<br>
-            <input type="radio" name="type" id="wot">WOT<br> -->
         </div>
 
-        <input id="search-text" autofocus="autofocus" type="text" />
-        <button id="checkPage">Submit</button>
+        <table>
+            <td><input id="search-text" type="text" autocomplete="off" /></td>
+            <td><button id="checkPage">SUBMIT</button></td>
+        </table>
     </form>
 </body>
 

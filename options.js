@@ -1,3 +1,5 @@
+var queryCount = 1;
+
 // Saves options to chrome.storage.sync.
 function save_options() {
 
@@ -36,6 +38,29 @@ function restore_options() {
         }
     });
     document.getElementById('save-options').addEventListener('click', save_options);
+
+    refreshTables();
+}
+
+function refreshTables() {
+    var tableContainer = document.getElementById('table-container');
+    tableContainer.innerHTML = '';
+    for (var i = 0; i < queryCount; i++) {
+        tableContainer.innerHTML += '<input type="text" placeholder="Table Name"> '+
+            '<input type="text" placeholder="Field Name">' +
+            getOperatorSelectBox(i) + ((i!=queryCount-1) ? '<br>' : '');
+    }
+
+    tableContainer.innerHTML += '<input id="add-query" type="button" value="+">';
+
+    document.getElementById('add-query').addEventListener('click', function() {
+        queryCount++;
+        refreshTables();
+    });
+}
+
+function getOperatorSelectBox(id) {
+    return '<select id="'+id+'"><option value="like">LIKE</option><option value="equal">=</option></select>';
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
