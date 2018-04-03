@@ -1,12 +1,13 @@
 // Saves options to chrome.storage.sync.
 function save_options() {
+
     var envList = [
         document.getElementById('env-url-input1').value,
         document.getElementById('env-url-input2').value,
         document.getElementById('env-url-input3').value
     ]
 
-    envList = envList.filter(x => { x == false });
+    envList = envList.filter(x => { return x != '' });
 
     chrome.storage.sync.set({
         envList: envList.join()
@@ -23,40 +24,18 @@ function save_options() {
 // Restores select box and checkbox state using the preferences
 // stored in chrome.storage.
 function restore_options() {
-    // Use default value color = 'red' and likesColor = true.
+
+    var envList = [];
+
     chrome.storage.sync.get(InitialData, function(items) {
-        document.getElementById('main-url').value = items.mainUrlOption;
+
+        envList = items.envList.split(',');
+
+        for (var i = 0; i < envList.length; i++) {
+            document.getElementById('env-url-input' + (i + 1)).value = envList[i];
+        }
     });
-    document.getElementById('save').addEventListener('click', save_options);
-    document.getElementById('new-environment').addEventListener('click', createNewEnvironmentUrl);
-}
-
-function saveNewUrl() {
-    var container = document.getElementById('new-env-url');
-    var name = document.getElementById('env-name-input').value;
-    var url = document.getElementById('env-url-input').value;
-
-    chrome.storage.sync.set({
-        envArray: JSON.stringify(envArray || [])
-    }, function() {
-        // Update status to let user know options were saved.
-        status.textContent = '';
-        var status = document.getElementById('status');
-        status.textContent = 'Options saved.';
-        setTimeout(function() {
-            container.innerHTML = '';
-        }, 1000);
-    });
-}
-
-function refreshEnviromentUrls() {
-    chrome.storage.sync.get(InitialData, function(items) {
-        var tmp = '';
-
-        items.envArray.forEach(element => {
-
-        });
-    });
+    document.getElementById('save-options').addEventListener('click', save_options);
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);

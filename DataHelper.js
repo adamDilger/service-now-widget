@@ -1,3 +1,3 @@
 var InitialData = {
-    mainUrlOption: 'downerdev1'
+    envList: 'downerdev1'
 }

@@ -1,13 +1,38 @@
 var mainUrl;
+var envUrls;
 
 function loadData() {
     chrome.storage.sync.get(InitialData, function(items) {
         mainUrl = items.mainUrlOption;
+
+        envUrls = items.envList.split(',');
+
+        refreshUI();
     });
 }
 
 function getMainUrl() {
+
+    mainUrl = document.querySelector('input[name="env"]:checked').id;
+
     return 'https://' + mainUrl + ".service-now.com";
+}
+
+function refreshUI() {
+    var container = document.getElementById('env-container');
+    var tmp = '';
+
+    for (var j = 0; j < envUrls.length; j++) {
+        var url = envUrls[j];
+
+        if (j == 0) {
+            tmp += '<input type="radio" name="env" id="' + url + '" checked>' + url + '<br>';
+        } else {
+            tmp += '<input type="radio" name="env" id="' + url + '">' + url + '<br>';
+        }
+    }
+
+    container.innerHTML = tmp;
 }
 
 
