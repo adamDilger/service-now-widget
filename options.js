@@ -1,4 +1,5 @@
-var queryCount = 1;
+var queryCount = 0;
+var queries = [];
 
 // Saves options to chrome.storage.sync.
 function save_options() {
@@ -9,9 +10,27 @@ function save_options() {
         document.getElementById('env-url-input3').value
     ]
 
+    var queryLabels = document.querySelectorAll('input[name="label"]');
+    var queryTables = document.querySelectorAll('input[name="table"]');
+    var queryFields = document.querySelectorAll('input[name="field"]');
+    var queryOperators = document.querySelectorAll('select[name="operator"]');
+    queries = [];
+
+    for (var i = 0; i < queryTables.length; i++) {
+        var tmp = {
+            label: queryLabels[i].value,
+            table: queryTables[i].value,
+            field:  queryFields[i].value,
+            operator: queryOperators[i].value
+        };
+        
+        queries.push(tmp);
+    }
+
     envList = envList.filter(x => { return x != '' });
 
     chrome.storage.sync.set({
+        queryList: {list: JSON.stringify(queries)},
         envList: envList.join()
     }, function() {
         // Update status to let user know options were saved.
@@ -31,6 +50,8 @@ function restore_options() {
 
     chrome.storage.sync.get(InitialData, function(items) {
 
+        queries = JSON.parse(items.queryList.list);
+        queryCount = queries.length;
         envList = items.envList.split(',');
 
         for (var i = 0; i < envList.length; i++) {
@@ -46,8 +67,10 @@ function refreshTables() {
     var tableContainer = document.getElementById('table-container');
     tableContainer.innerHTML = '';
     for (var i = 0; i < queryCount; i++) {
-        tableContainer.innerHTML += '<input type="text" placeholder="Table Name"> '+
-            '<input type="text" placeholder="Field Name">' +
+        tableContainer.innerHTML += 
+            '<input type="text" name="label" placeholder="Label" id="label'+i+'">'+
+            '<input type="text" name="table" placeholder="Table Name" id="table'+i+'">'+
+            '<input type="text" name="field" placeholder="Field Name" id="field'+i+'">' +
             getOperatorSelectBox(i) + ((i!=queryCount-1) ? '<br>' : '');
     }
 
@@ -60,7 +83,7 @@ function refreshTables() {
 }
 
 function getOperatorSelectBox(id) {
-    return '<select id="'+id+'"><option value="like">LIKE</option><option value="equal">=</option></select>';
+    return '<select name="operator" id="property'+id+'"><option value="like">LIKE</option><option value="equal">=</option></select>';
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
