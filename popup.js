@@ -2,61 +2,24 @@ var options = {};
 
 function loadData() {
     chrome.storage.sync.get(InitialData, function(items) {
-        options = items;
-        options.envUrls = items.envList.split(',');
+        options = retrieveValuesFromObject(items);
 
         refreshEnvList();
+        refreshTablesList();
     });
-
-    var queries = [{
-        name: "Business Rules",
-        table: "sys_script",
-        field: "Name",
-        operator: "LIKE"
-    }]
-
-    options.tables = [{
-            table: 'sys_script',
-            name: 'Business Rules'
-        },
-        {
-            table: 'sys_script_include',
-            name: 'Script Includes'
-        },
-        {
-            table: 'sys_ui_page',
-            name: 'UI Pages'
-        },
-        {
-            table: 'wot',
-            name: 'WOT'
-        },
-        {
-            table: 'user',
-            name: 'User'
-        }
-    ];
-}
-
-function getMainUrl() {
-    mainUrl = document.querySelector('input[name="env"]:checked').id;
-    return 'https://' + mainUrl + ".service-now.com";
 }
 
 function refreshEnvList() {
     var container = document.getElementById('env-container');
     var tmp = '';
 
-    for (var j = 0; j < options.envUrls.length; j++) {
-        var url = options.envUrls[j];
+    console.log(options.savedEnv);
 
-        if (j == 0) {
-            tmp += '<td><input class="env-radio" type="radio" name="env" id="' + url + '" checked>' +
-            '<label for="'+url+'">' + url + '</label></td>';
-        } else {
-            tmp += '<td><input class="env-radio" type="radio" name="env" id="' + url + '">' +
-            '<label for="'+url+'">' + url + '</label></td>';
-        }
+    for (var j = 0; j < options.envList.length; j++) {
+        var url = options.envList[j];
+
+        tmp += '<td><input class="env-radio" type="radio" name="env" id="' + url + '" ' + (url == options.savedEnv ? "checked>" : '>')
+        + '<label for="'+url+'">' + url + '</label></td>';
     }
 
     container.innerHTML = tmp;
@@ -64,13 +27,15 @@ function refreshEnvList() {
 
 function refreshTablesList() {
     var tmp = '';
-    options.tables.forEach(element => {
-        tmp += '<input type="radio" name="type" id="' + element.table + '">' + 
-            '<label for="'+element.table+'">' + element.name + '</label><br>';
-    });
+
+    for (var i = 0; i < options.queryList.length; i++) {
+        var element = options.queryList[i];
+
+        tmp += '<input type="radio" name="type" id="' + i + '" '+ (i == options.savedQueryIndex ? 'checked' : '') 
+        +'><label for="'+element.table+'">' + element.label + '</label><br>';
+    }
 
     document.getElementById('table-radio-container').innerHTML = tmp;
-    document.getElementById('sys_script').setAttribute('checked', 'true');
     var searchText = document.getElementById('search-text');
 
     //set all to focus the textbox onchange
@@ -85,24 +50,23 @@ function refreshTablesList() {
 document.addEventListener('DOMContentLoaded', function() {
 
     loadData();
-    refreshTablesList();
 
     var checkPageButton = document.getElementById('checkPage');
     checkPageButton.addEventListener('click', function() {
 
-        var table = document.querySelector('input[name="type"]:checked').id;
+        var elementId = document.querySelector('input[name="type"]:checked').id;
+        var element = options.queryList[Number(elementId)];
+        var mainUrl = document.querySelector('input[name="env"]:checked').id;
+        
         var searchText = document.getElementById('search-text').value.replace(" ", "%20");
-        var url = getMainUrl() + '/' + table + "_list.do?sysparm_query=nameLIKE" + searchText + "&sysparm_first_row=1&sysparm_view=&sysparm_choice_query_raw=&sysparm_list_header_search=true";
-
-        //recreate url if wot
-        if (table == 'wot') {
-            url = getMainUrl() + '/wm_task_list.do?sysparm_query=u_primary_contract!%3DSDU%5Estate!%3D7%5Enumber%3D' + searchText;
-        } else if (table == 'user') {
-            url = getMainUrl() + '/sys_user_list.do?sysparm_query=nameLIKE' + searchText;
-        }
+        var url = 'https://' + mainUrl + '.service-now.com/' + element.table + "_list.do?sysparm_query="+ element.field.toLowerCase() + element.operator + searchText;
 
         chrome.tabs.create({ url: url });
 
+        chrome.storage.sync.set({
+            savedQueryIndex: elementId,
+            savedEnv: mainUrl
+        });
     }, false);
 
     document.getElementById('search-text').focus();

@@ -5,21 +5,26 @@ var InitialData = {
             label: "Business Rule",
             table: "sys_script",
             field: "Name",
-            operator: "like"
+            operator: "LIKE"
         }
-    ]})
+    ]}),
+    savedEnv: 'downerdev1',
+    savedQueryIndex: 0
 }
 
 function getDataObject(envArray, queryArray) {
     return {
         queryList: JSON.stringify({list: queryArray}),
-        envList: envArray.join()
+        envList: envArray.join(), 
+        savedEnv: envArray[0]
     };
 }
 
 function retrieveValuesFromObject(items) {
     return {
-        queries: JSON.parse(items.queryList).list,
-        envList: items.envList.split(',')
+        queryList: JSON.parse(items.queryList).list,
+        envList: items.envList.split(','),
+        savedEnv: items.savedEnv,
+        savedQueryIndex: items.savedQueryIndex
     };
 }

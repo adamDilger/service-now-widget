@@ -60,7 +60,7 @@ function restore_options() {
     chrome.storage.sync.get(InitialData, function(items) {
 
         var tmp = retrieveValuesFromObject(items);
-        queries = tmp.queries;
+        queries = tmp.queryList;
         queryCount = queries.length;
         envList = tmp.envList;
 
@@ -111,7 +111,7 @@ function addQuery() {
 }
 
 function getOperatorSelectBox(id) {
-    return '<select name="operator" id="property'+id+'"><option value="like">LIKE</option><option value="equal">=</option></select>';
+    return '<select name="operator" id="property'+id+'"><option value="LIKE">LIKE</option><option value="equal">=</option></select>';
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
