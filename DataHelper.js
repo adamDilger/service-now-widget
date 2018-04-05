@@ -1,21 +1,21 @@
 var InitialData = {
-    envList: 'downerdev1',
-    queryList: JSON.stringify({list: [
-        {
+    envList: 'exampledev1',
+    queryList: JSON.stringify({
+        list: [{
             label: "Business Rule",
             table: "sys_script",
             field: "Name",
             operator: "LIKE"
-        }
-    ]}),
-    savedEnv: 'downerdev1',
+        }]
+    }),
+    savedEnv: 'exampledev1',
     savedQueryIndex: 0
 }
 
 function getDataObject(envArray, queryArray) {
     return {
-        queryList: JSON.stringify({list: queryArray}),
-        envList: envArray.join(), 
+        queryList: JSON.stringify({ list: queryArray }),
+        envList: envArray.join(),
         savedEnv: envArray[0]
     };
 }
