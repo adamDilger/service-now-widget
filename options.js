@@ -13,7 +13,10 @@ function save_options() {
     var envList = [
         document.getElementById('env-url-input1').value,
         document.getElementById('env-url-input2').value,
-        document.getElementById('env-url-input3').value
+        document.getElementById('env-url-input3').value,
+        document.getElementById('env-url-input4').value,
+        document.getElementById('env-url-input5').value,
+        document.getElementById('env-url-input6').value
     ]
 
     var queryLabels = document.querySelectorAll('input[name="label"]');
@@ -26,10 +29,10 @@ function save_options() {
         var tmp = {
             label: queryLabels[i].value,
             table: queryTables[i].value,
-            field:  queryFields[i].value,
+            field: queryFields[i].value,
             operator: queryOperators[i].value
         };
-        
+
         queries.push(tmp);
     }
 
@@ -39,7 +42,7 @@ function save_options() {
 
     envList = envList.filter(x => { return x != '' });
 
-    chrome.storage.sync.set(getDataObject(envList, queries), 
+    chrome.storage.sync.set(getDataObject(envList, queries),
         function() {
             statusHeader.textContent = 'Options saved.';
             setTimeout(function() {
@@ -70,7 +73,7 @@ function restore_options() {
 
         refreshTables();
     });
-    
+
     addQueryBtn = document.getElementById('add-query');
     statusHeader = document.getElementById('status');
     queryContainer = document.getElementById('query-container');
@@ -80,7 +83,7 @@ function restore_options() {
         queryCount++;
         addQuery();
     });
-    
+
 }
 
 function refreshTables() {
@@ -88,22 +91,22 @@ function refreshTables() {
     tableContainer.innerHTML = '';
     for (var i = 0; i < queryCount; i++) {
 
-        tableContainer.innerHTML += 
-            '<input type="text" name="label" placeholder="Label" id="label'+i+'" value="'+ queries[i].label +'">'+
-            '<input type="text" name="table" placeholder="Table Name" id="table'+i+'" value="'+ queries[i].table +'">'+
-            '<input type="text" name="field" placeholder="Field Name" id="field'+i+'" value="'+ queries[i].field +'">' +
-            getOperatorSelectBox(i) + ((i!=queryCount-1) ? '<br>' : '');
+        tableContainer.innerHTML +=
+            '<input type="text" name="label" placeholder="Label" id="label' + i + '" value="' + queries[i].label + '">' +
+            '<input type="text" name="table" placeholder="Table Name" id="table' + i + '" value="' + queries[i].table + '">' +
+            '<input type="text" name="field" placeholder="Field Name" id="field' + i + '" value="' + queries[i].field + '">' +
+            getOperatorSelectBox(i) + ((i != queryCount - 1) ? '<br>' : '');
     }
 }
 
 function addQuery() {
     if (!hasNewQuery) {
         var i = queryCount - 1;
-        queryContainer.innerHTML += 
-            '<input type="text" name="label" placeholder="Label" id="label'+i+'">'+
-            '<input type="text" name="table" placeholder="Table Name" id="table'+i+'">'+
-            '<input type="text" name="field" placeholder="Field Name" id="field'+i+'">' +
-        getOperatorSelectBox(i) + ((i!=queryCount-1) ? '<br>' : '');
+        queryContainer.innerHTML +=
+            '<input type="text" name="label" placeholder="Label" id="label' + i + '">' +
+            '<input type="text" name="table" placeholder="Table Name" id="table' + i + '">' +
+            '<input type="text" name="field" placeholder="Field Name" id="field' + i + '">' +
+            getOperatorSelectBox(i) + ((i != queryCount - 1) ? '<br>' : '');
 
         addQueryBtn.disabled = true;
         hasNewQuery = true;
@@ -111,7 +114,7 @@ function addQuery() {
 }
 
 function getOperatorSelectBox(id) {
-    return '<select name="operator" id="property'+id+'"><option value="LIKE">LIKE</option><option value="equal">=</option></select>';
+    return '<select name="operator" id="property' + id + '"><option value="LIKE">LIKE</option><option value="equal">=</option></select>';
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);

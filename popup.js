@@ -11,16 +11,22 @@ function loadData() {
 
 function refreshEnvList() {
     var container = document.getElementById('env-container');
-    var tmp = '';
+    var tmp = '<tr>';
 
     console.log(options.savedEnv);
 
     for (var j = 0; j < options.envList.length; j++) {
         var url = options.envList[j];
 
+        if (j > 2) {
+            tmp += '</tr><tr>';
+        }
+
         tmp += '<td><input class="env-radio" type="radio" name="env" id="' + url + '" ' + (url == options.savedEnv ? "checked>" : '>') +
             '<label for="' + url + '">' + url + '</label></td>';
     }
+
+    tmp += '</tr>';
 
     container.innerHTML = tmp;
 }
