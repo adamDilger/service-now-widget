@@ -89,6 +89,9 @@ function restore_options() {
 function refreshTables() {
     var tableContainer = document.getElementById('table-container');
     tableContainer.innerHTML = '';
+
+    console.log(queries);
+
     for (var i = 0; i < queryCount; i++) {
 
         tableContainer.innerHTML +=
@@ -96,6 +99,11 @@ function refreshTables() {
             '<input type="text" name="table" placeholder="Table Name" id="table' + i + '" value="' + queries[i].table + '">' +
             '<input type="text" name="field" placeholder="Field Name" id="field' + i + '" value="' + queries[i].field + '">' +
             getOperatorSelectBox(i) + ((i != queryCount - 1) ? '<br>' : '');
+    }
+
+    for (var i = 0; i < queryCount; i++) {
+        document.getElementById('property' + i).selectedIndex = (queries[i].operator == "LIKE" ? 0 : 1);
+        console.log(queries[i].label + ": " + document.getElementById('property' + i).value);
     }
 }
 
@@ -114,7 +122,7 @@ function addQuery() {
 }
 
 function getOperatorSelectBox(id) {
-    return '<select name="operator" id="property' + id + '"><option value="LIKE">LIKE</option><option value="equal">=</option></select>';
+    return '<select name="operator" id="property' + id + '"><option value="LIKE">LIKE</option><option value="=">=</option></select>';
 }
 
 document.addEventListener('DOMContentLoaded', restore_options);
